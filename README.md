@@ -118,7 +118,9 @@ A16.0.02.007|processus lateralis|latin_official_synonym|la|mammary gland
 A16.0.02.007|axillary tail|english_synonym|en|mammary gland
 
 -- find all terms with english names that contain "ventricle" that are descendants of "brain"
-sqlite> select _.name_en,_.name_la,hierarchy.ancestor_name,hierarchy.hierarchy_level from _ join hierarchy on _.id=hierarchy.id where hierarchy.ancestor_name='brain' and name_en like '%ventricle%';
+sqlite> select _.name_en,_.name_la,hierarchy.ancestor_name,hierarchy.hierarchy_level 
+    from _ join hierarchy on _.id=hierarchy.id 
+    where hierarchy.ancestor_name='brain' and name_en like '%ventricle%';
 
 name_en|name_la|ancestor_name|hierarchy_level
 medullary striae of fourth ventricle|striae medullares ventriculi quarti|brain|6
