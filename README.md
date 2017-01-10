@@ -105,11 +105,13 @@ sqlite> .header on
 -- get all records for 'brain'
 sqlite> select id,name_en,name_la,parent_name from _ where name_en like 'brain';
 
-id|name_en|name_la|parent_id|parent_name|fma_id|fma_parent_id|entity_id_number|type_of_entity|female_gender|male_gender|immaterial|bilaterality|variant|composite_property
+id|name_en|name_la|parent_name
 A14.1.03.001|brain|encephalon|central nervous system
 
 -- get all synonyms and parent for ID A16.0.02.007
-sqlite> select synonyms.*,_.parent_name from _ join synonyms on _.id=synonyms.id where _.id='A16.0.02.007';
+sqlite> select synonyms.*,_.parent_name 
+        from _ join synonyms on _.id=synonyms.id 
+        where _.id='A16.0.02.007';
 
 id|synonym|synonym_type|lang|parent_name
 A16.0.02.007|axillary process|name_en|en|mammary gland
