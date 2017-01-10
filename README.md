@@ -31,3 +31,69 @@ The respository contains the following subdirectories:
  - `ta98wikipedia.sqlite`: wikipedia information about TA98 terms
   * `_`: mapping from TA IDs to wikipedia titles (one row per title)
   * `page_info`: Information about wikipedia pages, including title, URL, images, and summary.
+
+## Databases and tables
+All files are sqlite3 databases that can be accessed using the sqlite3 command line 
+program or any number of sqlite3 language bindings.  The tables are designed primarily
+for convenience;  they are not fully denormalized in order to make some common queries
+possible with a minimal number of joins.
+
+### `ta98.sqlite`
+```sql
+sqlite> .schema
+CREATE TABLE _
+        (id text primary key,
+        name_en text,
+        name_la text,
+        parent_id text, parent_name text,
+        fma_id text, fma_parent_id text,
+        entity_id_number text,
+        type_of_entity text,
+        female_gender boolean,
+        male_gender boolean,
+        immaterial boolean,
+        bilaterality boolean,
+        variant boolean,
+        composite_property boolean
+          );
+CREATE TABLE synonyms
+        (id text, 
+        synonym text, 
+        synonym_type text, 
+        lang text);
+CREATE TABLE hierarchy
+        (id text,
+        ancestor_id text,
+        ancestor_name text,
+        hierarchy_level numeric);
+CREATE TABLE fma_names
+        (fma_id text primary key,
+        fma_name text);
+CREATE TABLE fma_hierarchy
+        (id text,
+        ancestor_id text,
+        ancestor_name text,
+        hierarchy_level numeric);
+CREATE TABLE notes
+        (id text,
+        note_text text,
+        note_type text);
+
+```
+### `ta98wikipedia.sqlite`
+```sql
+sqlite> .schema
+CREATE TABLE _
+                    (ta_id text,
+                    ta_name text,
+                    wikipedia_title text);
+CREATE TABLE images
+                    (wikipedia_title text,
+                    image_url text);
+CREATE TABLE page_info
+                    (wikipedia_title text primary key,
+                    summary text,
+                    page_url text,
+                    parent_id numeric,
+                    revision_id numeric);
+```
