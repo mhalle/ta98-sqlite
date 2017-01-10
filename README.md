@@ -97,3 +97,34 @@ CREATE TABLE page_info
                     parent_id numeric,
                     revision_id numeric);
 ```
+# Example queries
+```sql
+
+% sqlite3 ta98.sqlite
+sqlite> .header on
+-- get all records for 'brain'
+sqlite> select id,name_en,name_la,parent_name from _ where name_en like 'brain';
+
+id|name_en|name_la|parent_id|parent_name|fma_id|fma_parent_id|entity_id_number|type_of_entity|female_gender|male_gender|immaterial|bilaterality|variant|composite_property
+A14.1.03.001|brain|encephalon|central nervous system
+
+-- get all synonyms and parent for ID A16.0.02.007
+sqlite> select synonyms.*,_.parent_name from _ join synonyms on _.id=synonyms.id where _.id='A16.0.02.007';
+
+id|synonym|synonym_type|lang|parent_name
+A16.0.02.007|axillary process|name_en|en|mammary gland
+A16.0.02.007|processus axillaris|name_la|la|mammary gland
+A16.0.02.007|processus lateralis|latin_official_synonym|la|mammary gland
+A16.0.02.007|axillary tail|english_synonym|en|mammary gland
+
+-- find all terms with english names that contain "ventricle" that are descendants of "brain"
+sqlite> select _.name_en,_.name_la,hierarchy.ancestor_name,hierarchy.hierarchy_level from _ join hierarchy on _.id=hierarchy.id where hierarchy.ancestor_name='brain' and name_en like '%ventricle%';
+
+name_en|name_la|ancestor_name|hierarchy_level
+medullary striae of fourth ventricle|striae medullares ventriculi quarti|brain|6
+fourth ventricle|ventriculus quartus|brain|2
+medullary striae of fourth ventricle|striae medullares ventriculi quarti|brain|4
+roof of fourth ventricle|tegmen ventriculi quarti|brain|3
+third ventricle|ventriculus tertius|brain|3
+lateral ventricle|ventriculus lateralis|brain|3
+```
