@@ -170,4 +170,14 @@ medullary striae of fourth ventricle|striae medullares ventriculi quarti|brain|4
 roof of fourth ventricle|tegmen ventriculi quarti|brain|3
 third ventricle|ventriculus tertius|brain|3
 lateral ventricle|ventriculus lateralis|brain|3
+
+-- query wikipedia for information about TA98 "brain" term.
+sqlite> select wikipedia.*, wp_page_info.page_url 
+    from wikipedia join wp_page_info 
+    on wikipedia.wp_title=wp_page_info.wp_title 
+    where wikipedia.name_en="brain";
+
+id|name_en|wp_title|page_url
+A14.1.03.001|brain|Human brain|https://en.wikipedia.org/wiki/Human_brain
+
 ```
