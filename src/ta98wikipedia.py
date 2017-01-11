@@ -11,17 +11,17 @@ import sys
 
 if __name__ == '__main__':
     ta98 = sqlite3.connect(sys.argv[1])
-    wpedia = sqlite3.connect(sys.argv[2])
+    wpedia = ta98  # used to be separate DBs
 
-    wpedia.execute('''create table if not exists _
-                    (ta_id text,
-                    ta_name text,
-                    wikipedia_title text)''')
+    wpedia.execute('''create table if not exists wikipedia
+                    (id text,
+                    name_en text,
+                    wp_title text)''')
 
     ta_info = list(ta98.execute('select id,name_en from _'))
 
     for ta_id, ta_name in ta_info:
-        already_done = list(wpedia.execute('''select * from _ where ta_id=?''', (ta_id,)))
+        already_done = list(wpedia.execute('''select * from wikipedia where id=?''', (ta_id,)))
         if already_done:
             print "done:", already_done
             continue
@@ -30,10 +30,8 @@ if __name__ == '__main__':
         except ValueError:  # sometimes we have spurious errors
             continue
         for s in search_results:
-            wpedia.execute('''insert or ignore into _
-                (ta_id, ta_name, wikipedia_title) values 
+            wpedia.execute('''insert or ignore into wikipedia
+                (id, name_en, wp_title) values 
                 (?,?,?)''', (ta_id, ta_name, s))
             print (ta_id, ta_name, s)
             wpedia.commit()
-
-

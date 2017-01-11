@@ -83,19 +83,58 @@ CREATE TABLE notes
 ### `ta98wikipedia.sqlite`
 ```sql
 sqlite> .schema
+-- contains additional wikipedia tables
 CREATE TABLE _
-                    (ta_id text,
-                    ta_name text,
-                    wikipedia_title text);
-CREATE TABLE images
-                    (wikipedia_title text,
-                    image_url text);
-CREATE TABLE page_info
-                    (wikipedia_title text primary key,
-                    summary text,
-                    page_url text,
-                    parent_id numeric,
-                    revision_id numeric);
+        (id text primary key,
+        name_en text,
+        name_la text,
+        parent_id text, parent_name text,
+        fma_id text, fma_parent_id text,
+        entity_id_number text,
+        type_of_entity text,
+        female_gender boolean,
+        male_gender boolean,
+        immaterial boolean,
+        bilaterality boolean,
+        variant boolean,
+        composite_property boolean
+      );
+CREATE TABLE synonyms
+        (id text, 
+        synonym text, 
+        synonym_type text, 
+        lang text);
+CREATE TABLE hierarchy
+        (id text,
+        ancestor_id text,
+        ancestor_name text,
+        hierarchy_level numeric);
+CREATE TABLE fma_names
+        (fma_id text primary key,
+        fma_name text);
+CREATE TABLE fma_hierarchy
+        (id text,
+        ancestor_id text,
+        ancestor_name text,
+        hierarchy_level numeric);
+CREATE TABLE notes
+        (id text,
+        note_text text,
+        note_type text);
+
+CREATE TABLE wikipedia
+        (id text, 
+        name_en text, 
+        wp_title text);
+CREATE TABLE wp_images 
+        (wp_title text, 
+        image_url text);
+CREATE TABLE wp_page_info 
+        (wp_title text primary key, 
+        page_url text, 
+        summary text, 
+        parent_id numeric, 
+        revision_id numeric);
 ```
 # Example queries
 ```sql
