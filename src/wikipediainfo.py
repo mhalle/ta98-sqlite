@@ -23,7 +23,7 @@ if __name__ == '__main__':
         t = tv[0]
         print t
         already_done = list(wpedia.execute('''select count(1)
-                            from page_info where wp_title=?''', (t,)))[0][0]
+                            from wp_page_info where wp_title=?''', (t,)))[0][0]
         if already_done:
             continue
         try:
