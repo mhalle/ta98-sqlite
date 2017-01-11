@@ -28,9 +28,11 @@ The respository contains the following subdirectories:
   * `notes`:  notes for each TA98 entry.
   * `hierarchy`: the ancestors of each TA98 entry (one row per ancestor)
   * `fma_names`: mapping of FMA IDs to FMA names
- - `ta98wikipedia.sqlite`: wikipedia information about TA98 terms
-  * `_`: mapping from TA IDs to wikipedia titles (one row per title)
-  * `page_info`: Information about wikipedia pages, including title, URL, images, and summary.
+ - `ta98wikipedia.sqlite`: same as ta98.sqlite, but also includes 
+    wikipedia information about TA98 terms
+  * `wikipedia`: mapping from TA IDs to wikipedia titles (one row per title)
+  * `wp_page_info`: Information about wikipedia pages, including title, URL, and summary.
+  * `wp_images`: Information about wikipedia images per title.
 
 ## Databases and tables
 All files are sqlite3 databases that can be accessed using the sqlite3 command line 
