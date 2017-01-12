@@ -45,19 +45,19 @@ possible with a minimal number of joins.
 sqlite> .schema
 CREATE TABLE _
         (id text primary key,  -- TA98 ID
-        name_en text, -- English name
-        name_la text, -- Latin name
-        parent_id text,  -- TA ID of parent (or NULL)
-        parent_name text,  -- TA name of parent (or NULL)
-        fma_id text, -- FMA ID
-        fma_parent_id text,   -- FMA ID of parent
-        entity_id_number text,  -- under-used TA entity number
+        name_en text,          -- English name
+        name_la text,          -- Latin name
+        parent_id text,        -- TA ID of parent (or NULL)
+        parent_name text,      -- TA name of parent (or NULL)
+        fma_id text,           -- FMA ID
+        fma_parent_id text,    -- FMA ID of parent
+        entity_id_number text, -- under-used TA entity number
         type_of_entity text,
-        female_gender boolean,  -- is female specific?
-        male_gender boolean,    -- is male specific?
-        immaterial boolean,     -- immaterial or material?
-        bilaterality boolean,   -- bilateral?
-        variant boolean,        -- variant?
+        female_gender boolean,   -- is female specific?
+        male_gender boolean,     -- is male specific?
+        immaterial boolean,      -- immaterial or material?
+        bilaterality boolean,    -- bilateral?
+        variant boolean,         -- variant?
         composite_property boolean -- composite_property?
           );
 CREATE TABLE synonyms
