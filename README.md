@@ -110,7 +110,7 @@ CREATE TABLE wp_page_info
 # Example queries
 ```sql
 
-% sqlite3 ta98.sqlite
+% sqlite3 ta98wikipedia.sqlite
 sqlite> .header on
 -- get all records for 'brain'
 sqlite> select id,name_en,name_la,parent_name from _ where name_en like 'brain';
