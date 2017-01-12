@@ -120,6 +120,12 @@ CREATE TABLE wp_page_info
 
 % sqlite3 ta98wikipedia.sqlite
 sqlite> .header on
+sqlite> select count(1) from _;       -- how many terms in the database?
+7444
+sqlite> select count(1) from wikipedia;  -- how many terms are linked to wikipedia?
+3047
+sqlite> select count(1) from synonyms; -- how many synonyms?
+16659
 -- get all records for 'brain'
 sqlite> select id,name_en,name_la,parent_name from _ where name_en like 'brain';
 
