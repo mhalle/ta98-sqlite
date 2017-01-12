@@ -91,44 +91,7 @@ CREATE TABLE notes
 ### `ta98wikipedia.sqlite`
 ```sql
 sqlite> .schema
--- contains additional wikipedia tables
-CREATE TABLE _    -- see above
-        (id text primary key,
-        name_en text,
-        name_la text,
-        parent_id text, parent_name text,
-        fma_id text, fma_parent_id text,
-        entity_id_number text,
-        type_of_entity text,
-        female_gender boolean,
-        male_gender boolean,
-        immaterial boolean,
-        bilaterality boolean,
-        variant boolean,
-        composite_property boolean
-      );
-CREATE TABLE synonyms  -- see above
-        (id text, 
-        synonym text, 
-        synonym_type text, 
-        lang text);
-CREATE TABLE hierarchy  -- see above
-        (id text,
-        ancestor_id text,
-        ancestor_name text,
-        hierarchy_level numeric);
-CREATE TABLE fma_names  -- see above
-        (fma_id text primary key,
-        fma_name text);
-CREATE TABLE fma_hierarchy  -- see above
-        (id text,
-        ancestor_id text,
-        ancestor_name text,
-        hierarchy_level numeric);
-CREATE TABLE notes   -- see above
-        (id text,
-        note_text text,
-        note_type text);
+-- ... as above, plus these additional tables:
 
 CREATE TABLE wikipedia  
         (id text,   -- TA98 ID
