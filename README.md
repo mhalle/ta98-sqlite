@@ -61,31 +61,31 @@ CREATE TABLE _
         composite_property boolean -- composite_property?
           );
 CREATE TABLE synonyms
-        (id text,   -- TA98 ID
-        synonym text, -- synonym text
+        (id text,          -- TA98 ID
+        synonym text,      -- synonym text
         synonym_type text, -- field name of synonym 
                            -- (could be name_en or name_la as well)
         lang text);        -- language code of synonym text
 CREATE TABLE hierarchy
-        (id text,    -- TA98 ID
-        ancestor_id text, -- TA ID of ancestor
-        ancestor_name text, -- English name of ancestor
+        (id text,                  -- TA98 ID
+        ancestor_id text,          -- TA ID of ancestor
+        ancestor_name text,        -- English name of ancestor
         hierarchy_level numeric);  -- levels of ancestr above entity
                                    -- (1 is parent, 2 grandparent)
 CREATE TABLE fma_names
         (fma_id text primary key,  -- FMA ID
         fma_name text);            -- FMA name
 CREATE TABLE fma_hierarchy
-        (id text,        -- TA98 ID
-        ancestor_id text,  -- FMA ID of ancestor
-        ancestor_name text,  -- FMA name of ancestor
+        (id text,                  -- TA98 ID
+        ancestor_id text,          -- FMA ID of ancestor
+        ancestor_name text,        -- FMA name of ancestor
         hierarchy_level numeric);  -- levels of ancestor above entity
                                    -- (1 is parent, 2 grandparent)
 
 CREATE TABLE notes
-        (id text,  -- FMA98 ID
-        note_text text,  -- text of note
-        note_type text);  -- name of field of note
+        (id text,          -- FMA98 ID
+        note_text text,    -- text of note
+        note_type text);   -- name of field of note
 
 ```
 ### `ta98wikipedia.sqlite`
@@ -94,18 +94,18 @@ sqlite> .schema
 -- ... as above, plus these additional tables:
 
 CREATE TABLE wikipedia  
-        (id text,   -- TA98 ID
-        name_en text, -- TA98 English name
-        wp_title text); -- title of wikipedia article
+        (id text,         -- TA98 ID
+        name_en text,     -- TA98 English name
+        wp_title text);   -- title of wikipedia article
 CREATE TABLE wp_images  
-        (wp_title text,  -- wikipedia article title
+        (wp_title text,   -- wikipedia article title
         image_url text);  -- URL of image
 CREATE TABLE wp_page_info 
         (wp_title text primary key, -- wikipedia article title
-        page_url text,  -- URL of wikipedia page
-        summary text,   -- plaintext summary of article
-        parent_id numeric,   -- wikipedia parent ID
-        revision_id numeric);  -- wikipedia revision ID
+        page_url text,              -- URL of wikipedia page
+        summary text,               -- plaintext summary of article
+        parent_id numeric,          -- wikipedia parent ID
+        revision_id numeric);       -- wikipedia revision ID
 ```
 # Example queries
 ```sql
