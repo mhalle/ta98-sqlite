@@ -11,7 +11,8 @@ maintained by the University of Fribourg (Switzerland). Please see their site
 (http://www.unifr.ch/ifaa/) for more information.
 
 As a convenience, two assembled versions of the TA98 sqlite data is also available
-here.  The first, ta98.sqlite, contains just the TA98 terms, synonyms, and hierarchy.
+here.  The first, ta98.sqlite, contains just the TA98 terms, synonyms, hierarchy, and
+official correspondence to the Foundational Model of Anatomy ontology (FMA).
 
 The second, ta98wikipedia.sqlite, also adds mappings to wikipedia titles 
 and associated article URLs, images and text summaries.
