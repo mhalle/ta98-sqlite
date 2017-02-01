@@ -32,7 +32,7 @@ The respository contains the following subdirectories:
  ## The `db` directory
  In the `db` directory, the following databases and tables are interesting:
  - `ta98.sqlite`: contains these tables describing TA98 structures
-  * `_`: information about each TA98 entry (one row per entry)
+  * `ta98`: information about each TA98 entry (one row per entry)
   * `synonyms`: all synonyms for each TA98 entry (one row per synonym)
   * `notes`:  notes for each TA98 entry.
   * `hierarchy`: the ancestors of each TA98 entry (one row per ancestor)
@@ -52,7 +52,7 @@ possible with a minimal number of joins.
 ### `ta98.sqlite`
 ```sql
 sqlite> .schema
-CREATE TABLE _
+CREATE TABLE ta98
         (id text primary key,  -- TA98 ID
         name_en text,          -- English name
         name_la text,          -- Latin name
@@ -79,7 +79,7 @@ CREATE TABLE hierarchy
         (id text,                  -- TA98 ID
         ancestor_id text,          -- TA ID of ancestor
         ancestor_name text,        -- English name of ancestor
-        hierarchy_level numeric);  -- levels of ancestr above entity
+        hierarchy_level integer);  -- levels of ancestr above entity
                                    -- (1 is parent, 2 grandparent)
 CREATE TABLE fma_names
         (fma_id text primary key,  -- FMA ID
@@ -88,7 +88,7 @@ CREATE TABLE fma_hierarchy
         (id text,                  -- TA98 ID
         ancestor_id text,          -- FMA ID of ancestor
         ancestor_name text,        -- FMA name of ancestor
-        hierarchy_level numeric);  -- levels of ancestor above entity
+        hierarchy_level integer);  -- levels of ancestor above entity
                                    -- (1 is parent, 2 grandparent)
 
 CREATE TABLE notes
@@ -113,30 +113,30 @@ CREATE TABLE wp_page_info
         (wp_title text primary key, -- wikipedia article title
         page_url text,              -- URL of wikipedia page
         summary text,               -- plaintext summary of article
-        parent_id numeric,          -- wikipedia parent ID
-        revision_id numeric);       -- wikipedia revision ID
+        parent_id integer,          -- wikipedia parent ID
+        revision_id integer);       -- wikipedia revision ID
 ```
 # Example queries
 ```sql
 
 % sqlite3 ta98wikipedia.sqlite
 sqlite> .header on
-sqlite> select count(1) from _;       -- how many terms in the database?
+sqlite> select count(1) from ta98;       -- how many terms in the database?
 7444
 sqlite> select count(1) from wikipedia;  -- how many terms are linked to wikipedia?
 3047
 sqlite> select count(1) from synonyms; -- how many synonyms?
 16659
 -- get all records for 'brain'
-sqlite> select id,name_en,name_la,parent_name from _ where name_en like 'brain';
+sqlite> select id,name_en,name_la,parent_name from ta98 where name_en like 'brain';
 
 id|name_en|name_la|parent_name
 A14.1.03.001|brain|encephalon|central nervous system
 
 -- get all synonyms and parent for ID A16.0.02.007
-sqlite> select synonyms.*,_.parent_name 
-        from _ join synonyms on _.id=synonyms.id 
-        where _.id='A16.0.02.007';
+sqlite> select synonyms.*,ta98.parent_name 
+        from ta98 join synonyms on ta98.id=synonyms.id 
+        where ta98.id='A16.0.02.007';
 
 id|synonym|synonym_type|lang|parent_name
 A16.0.02.007|axillary process|name_en|en|mammary gland
@@ -145,8 +145,8 @@ A16.0.02.007|processus lateralis|latin_official_synonym|la|mammary gland
 A16.0.02.007|axillary tail|english_synonym|en|mammary gland
 
 -- find all terms with english names that contain "ventricle" that are descendants of "brain"
-sqlite> select _.name_en,_.name_la,hierarchy.ancestor_name,hierarchy.hierarchy_level 
-    from _ join hierarchy on _.id=hierarchy.id 
+sqlite> select ta98.name_en,ta98.name_la,hierarchy.ancestor_name,hierarchy.hierarchy_level 
+    from ta98 join hierarchy on ta98.id=hierarchy.id 
     where hierarchy.ancestor_name='brain' and name_en like '%ventricle%';
 
 name_en|name_la|ancestor_name|hierarchy_level
