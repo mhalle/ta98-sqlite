@@ -14,8 +14,8 @@ if __name__ == '__main__':
                     (wp_title text primary key,
                     page_url text,
                     summary text,
-                    parent_id numeric,
-                    revision_id numeric)''')
+                    parent_id integer,
+                    revision_id integer)''')
 
     titles = list(wpedia.execute('''select distinct wp_title from wikipedia'''))
 

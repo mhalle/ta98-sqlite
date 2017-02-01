@@ -37,7 +37,7 @@ import sqlite3
 
 def createDbTables(conn):
     cur = conn.cursor()
-    cur.execute('''create table if not exists _ 
+    cur.execute('''create table if not exists ta98 
         (id text primary key, 
         english_equivalent text, latin_preferred_term text,
         english_synonym text,

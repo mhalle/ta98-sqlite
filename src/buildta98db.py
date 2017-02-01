@@ -37,7 +37,7 @@ field_replacement = {
 
 def createDbTables(conn):
     cur = conn.cursor()
-    cur.execute('''create table if not exists _ 
+    cur.execute('''create table if not exists ta98 
         (id text primary key, 
         name_en text,
         name_la text,
@@ -60,7 +60,7 @@ def createDbTables(conn):
         (id text,
         ancestor_id text,
         ancestor_name text,
-        hierarchy_level numeric)''')
+        hierarchy_level integer)''')
 
     cur.execute('''create table if not exists fma_names
         (fma_id text primary key,
@@ -70,7 +70,7 @@ def createDbTables(conn):
         (id text,
         ancestor_id text,
         ancestor_name text,
-        hierarchy_level numeric)''')
+        hierarchy_level integer)''')
 
     cur.execute('''create table if not exists notes
         (id text,
@@ -128,7 +128,7 @@ def dbmain():
                       pcheck(r, 'bilaterality'),
                       pcheck(r, 'variant'),
                       pcheck(r, 'composite_property'))
-            cur.execute('''insert or ignore into _
+            cur.execute('''insert or ignore into ta98
                 (id, 
                 name_en, name_la,
                 parent_id, parent_name,
