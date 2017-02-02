@@ -37,6 +37,7 @@ field_replacement = {
 
 def createDbTables(conn):
     cur = conn.cursor()
+    cur.execute('pragma foreign_keys=1;')
     cur.execute('''create table if not exists ta98 
         (id text primary key, 
         name_en text,
@@ -54,13 +55,20 @@ def createDbTables(conn):
           )''')
 
     cur.execute('''create table if not exists synonyms
-        (id text, synonym text, synonym_type text, lang text)''')
+        (id text, 
+        synonym text, 
+        synonym_type text, 
+        lang text,
+        foreign key(id) references ta98(id)
+        )''')
 
     cur.execute('''create table if not exists hierarchy
         (id text,
         ancestor_id text,
         ancestor_name text,
-        hierarchy_level integer)''')
+        hierarchy_level integer,
+        foreign key(id) references ta98(id)
+        )''')
 
     cur.execute('''create table if not exists fma_names
         (fma_id text primary key,
@@ -70,12 +78,16 @@ def createDbTables(conn):
         (id text,
         ancestor_id text,
         ancestor_name text,
-        hierarchy_level integer)''')
+        hierarchy_level integer,
+        foreign key(id) references ta98(id)
+        )''')
 
     cur.execute('''create table if not exists notes
         (id text,
         note_text text,
-        note_type text)''')
+        note_type text,
+        foreign key(id) references ta98(id)
+    )''')
 
     return conn
 
