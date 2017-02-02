@@ -37,7 +37,7 @@ field_replacement = {
 
 def createDbTables(conn):
     cur = conn.cursor()
-    cur.execute('pragma foreign_keys=1;')
+    cur.execute('pragma foreign_keys=ON')
     cur.execute('''create table if not exists ta98 
         (id text primary key, 
         name_en text,
