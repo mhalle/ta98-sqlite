@@ -53,7 +53,8 @@ possible with a minimal number of joins.
 ```sql
 sqlite> .schema
 CREATE TABLE ta98
-        (id text primary key,  -- TA98 ID
+        (id text primary key,  -- TA98 ID, appended with M or F if gender-specific
+        source_id text,        -- TA98 original id (ambiguous when gender-specific)
         name_en text,          -- English name
         name_la text,          -- Latin name
         parent_id text,        -- TA ID of parent (or NULL)
@@ -86,8 +87,9 @@ CREATE TABLE fma_names
         fma_name text);            -- FMA name
 CREATE TABLE fma_hierarchy
         (id text,                  -- TA98 ID
-        ancestor_id text,          -- FMA ID of ancestor
-        ancestor_name text,        -- FMA name of ancestor
+        fma_id text,               -- FMA ID of structure
+        fma_ancestor_id text,      -- FMA ID of ancestor
+        fma_ancestor_name text,    -- FMA name of ancestor
         hierarchy_level integer);  -- levels of ancestor above entity
                                    -- (1 is parent, 2 grandparent)
 
