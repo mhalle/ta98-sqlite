@@ -1,7 +1,7 @@
 import ta98
 import sys
 import sqlite3
-
+import re
 
 # more convenient names
 field_replacement = {
@@ -39,7 +39,7 @@ def createDbTables(conn):
     cur = conn.cursor()
     cur.execute('pragma foreign_keys=ON')
     cur.execute('''create table if not exists ta98 
-        (id text primary key, 
+        (id text, 
         name_en text,
         name_la text,
         parent_id text, parent_name text,
@@ -56,6 +56,7 @@ def createDbTables(conn):
 
     cur.execute('''create table if not exists synonyms
         (id text, 
+        official_id text,
         synonym text, 
         synonym_type text, 
         lang text,
@@ -76,10 +77,13 @@ def createDbTables(conn):
 
     cur.execute('''create table if not exists fma_hierarchy
         (id text,
-        ancestor_id text,
-        ancestor_name text,
+        fma_id text,
+        fma_ancestor_id text,
+        fma_ancestor_name text,
         hierarchy_level integer,
         foreign key(id) references ta98(id)
+        foreign key(id) references ta98(id),
+        foreign key(fma_id) references ta98(fma_id)
         )''')
 
     cur.execute('''create table if not exists notes
@@ -91,6 +95,11 @@ def createDbTables(conn):
 
     return conn
 
+def stripNS(s):
+    if not s:
+        return s
+    return re.sub(r'^\w+:', '', s)
+
 def convertParsedOutput(indict):
     outdict = {}
     for k, v in indict.iteritems():
@@ -100,6 +109,11 @@ def convertParsedOutput(indict):
                              for x in outdict['properties']]
 
     outdict['type_of_entity'] = outdict['type_of_entity'].lower()
+    outdict['source_id'] = outdict['id']
+    if 'male_gender' in outdict['properties']:
+        outdict['id'] = outdict['id'] + 'M'
+    else if female_gender in outdict['properties']:
+        outdict['id'] = outdict['id'] + 'F'
     return outdict
 
 def pcheck(r, propname):
@@ -121,17 +135,19 @@ def dbmain():
     conn = sqlite3.connect(sys.argv[1])
     createDbTables(conn)
     cur = conn.cursor()
+    cur.execute('PRAGMA foreign_keys = OFF')
     filenames = sys.argv[2:]
     for filename in filenames:
         with open(filename) as fp:
             r = convertParsedOutput(ta98.parse(fp))
             values = (r['id'],
+                      r['source_id'],
                       acheck(r, 'name_en'),
                       acheck(r, 'name_la'),
                       aicheck(r, 'parent', 0),
                       aicheck(r, 'parent', 1),
-                      acheck(r, 'fma_id'),
-                      aicheck(r, 'fma_parent', 0),
+                      stripNS(acheck(r, 'fma_id')),
+                      stripNS(aicheck(r, 'fma_parent', 0)),
                       acheck(r, 'entity_id_number'),
                       acheck(r, 'type_of_entity'),
                       pcheck(r, 'female_gender'),
@@ -141,38 +157,40 @@ def dbmain():
                       pcheck(r, 'variant'),
                       pcheck(r, 'composite_property'))
             cur.execute('''insert or ignore into ta98
-                (id, 
-                name_en, name_la,
-                parent_id, parent_name,
-                fma_id, fma_parent_id,  
-                entity_id_number,        
-                type_of_entity,
-                female_gender,
-                male_gender,
-                immaterial,
-                bilaterality,
-                variant,
-                composite_property) values 
-                (?,?,?, ?,?,?, ?,?,?, ?,?,?, ?,?,?);''', values)
+                (id, name_en, name_la,
+                parent_id, parent_name, fma_id, 
+                fma_parent_id, entity_id_number, type_of_entity,
+                female_gender, male_gender, immaterial,
+                bilaterality, variant, composite_property) 
+                values 
+                (?,?, ?,?, ?,?,?, ?,?,?, ?,?,?, ?,?,?);''', values)
 
             # HIERARCHY
             ancestors = r.get('ancestors', [])
             if len(ancestors) > 1:
                 for i, ancestor in enumerate(ancestors[1:]):
                     cur.execute('''insert or ignore into hierarchy
-                        (id, ancestor_id, ancestor_name, hierarchy_level) values (?,?,?,?);''',
-                                [r['id'], ancestor[0], ancestor[1], i+1])
+                        (id, 
+                        ancestor_id, 
+                        ancestor_name, 
+                        hierarchy_level) values (?,?,?,?);''',
+                                [r['id'], 
+                                ancestor[0], ancestor[1], i+1])
 
             # FMA ANCESTORS
-            ancestors = r.get('fma_ancestors', [])
-            cur.executemany('''insert or ignore into fma_names (fma_id, fma_name) values (?, ?)''',
+            # strip prefix off early
+            ancestors = [(stripNS(i), n) for (i, n) in r.get('fma_ancestors', [])]
+            cur.executemany("""insert or ignore into fma_names 
+                                 (fma_id, fma_name) values (?, ?)""",
                             ancestors)
 
             if len(ancestors) > 1:
                 for i, ancestor in enumerate(ancestors[1:]):
                     cur.execute('''insert or ignore into fma_hierarchy
-                        (id, ancestor_id, ancestor_name, hierarchy_level) values (?,?,?,?);''',
-                                [r['id'], ancestor[0], ancestor[1], i+1])
+                        (id, fma_id, fma_ancestor_id, fma_ancestor_name, hierarchy_level) 
+                        values (?,?,?,?,?);''',
+                                [r['id'], stripNS(acheck(r, 'fma_id')),
+                                ancestor[0], ancestor[1], i+1])
 
             for note_type in ('footnote', 'problem_note', 'correction_note',
                               'rat_note', 'redirection_note'):
