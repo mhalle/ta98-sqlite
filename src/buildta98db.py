@@ -39,7 +39,8 @@ def createDbTables(conn):
     cur = conn.cursor()
     cur.execute('pragma foreign_keys=ON')
     cur.execute('''create table if not exists ta98 
-        (id text, 
+        (id text primary key,
+        source_id text,
         name_en text,
         name_la text,
         parent_id text, parent_name text,
@@ -56,7 +57,6 @@ def createDbTables(conn):
 
     cur.execute('''create table if not exists synonyms
         (id text, 
-        official_id text,
         synonym text, 
         synonym_type text, 
         lang text,
@@ -112,7 +112,7 @@ def convertParsedOutput(indict):
     outdict['source_id'] = outdict['id']
     if 'male_gender' in outdict['properties']:
         outdict['id'] = outdict['id'] + 'M'
-    else if female_gender in outdict['properties']:
+    elif 'female_gender' in outdict['properties']:
         outdict['id'] = outdict['id'] + 'F'
     return outdict
 
@@ -157,7 +157,7 @@ def dbmain():
                       pcheck(r, 'variant'),
                       pcheck(r, 'composite_property'))
             cur.execute('''insert or ignore into ta98
-                (id, name_en, name_la,
+                (id, source_id, name_en, name_la,
                 parent_id, parent_name, fma_id, 
                 fma_parent_id, entity_id_number, type_of_entity,
                 female_gender, male_gender, immaterial,

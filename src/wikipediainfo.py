@@ -17,18 +17,20 @@ if __name__ == '__main__':
                     parent_id integer,
                     revision_id integer)''')
 
-    titles = list(wpedia.execute('''select distinct wp_title from wikipedia'''))
-
-    for tv in titles:
-        t = tv[0]
+    titles = set(x[0] for x in wpedia.execute('select distinct wp_title from wikipedia'))
+    titles_done = set(x[0] for x in wpedia.execute('select wp_title from wp_page_info'))
+    for t in (titles - titles_done):
         print t
-        already_done = list(wpedia.execute('''select count(1)
-                            from wp_page_info where wp_title=?''', (t,)))[0][0]
-        if already_done:
-            continue
+        page = None
         try:
             page = wikipedia.page(t)
-        except:  # catch everything and ignore
+        except Exception as e:  # catch everything and ignore
+            print >> sys.stderr, e
+            try:
+                page = wikipedia.page(t.replace(' ', '_'), auto_suggest=False)
+            except Exception as e:
+                print >> sys.stderr, e
+        if not page:
             continue
 
         values = (t, page.summary, page.url, int(page.parent_id), int(page.revision_id))
@@ -37,7 +39,7 @@ if __name__ == '__main__':
         (?,?,?,?,?)''', values)
 
 
-        wpedia.executemany('''insert or ignore into images
+        wpedia.executemany('''insert or ignore into wp_images
                 (wp_title, image_url) values (?,?)''', [(t, i) for i in page.images])
         wpedia.commit()
 
