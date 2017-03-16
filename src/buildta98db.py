@@ -1,4 +1,4 @@
-import ta98
+import ta98parse
 import sys
 import sqlite3
 import re
