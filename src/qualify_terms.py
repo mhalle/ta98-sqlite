@@ -73,7 +73,8 @@ def uniqify(dbname):
                              'zone',
                              'stripe',
                              'ridge',
-                             'ridges']):
+                             'ridges',
+                             'lobe']):
             s.needs_parent = True
 
     # second pass: assemble
@@ -104,6 +105,7 @@ def uniqify(dbname):
     for s in sorted_structures:
         fully_qualified_names.append((s.id, s.hstring))
 
+    db.execute("delete from synonyms where synonym_type = 'nac:qualified_name'")
     db.executemany("""insert or ignore into synonyms 
                            (id, synonym, synonym_type, lang) 
                            values (?, ?, 'nac:qualified_name', 'en')""",
