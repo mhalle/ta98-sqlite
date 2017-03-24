@@ -1,0 +1,29 @@
+A09.2.03.007: muscular layer  ->  A08.4.01.001F: female urethra
+A09.2.03.004: urethral crest  ->  A08.4.01.001F: female urethra
+A09.2.03.001: filling internal urethral orifice  ->  A08.3.01.027M: internal urethral orifice
+A10.1.02.508F: mesovarium  ->  A10.1.02.505F: broad ligament of uterus
+A12.3.09.015: pampiniform plexus  ->  A12.3.09.014F: right ovarian vein
+A12.2.15.033F: ovarian branches  ->  A12.2.15.029F: uterine artery
+A12.2.15.031F: vaginal branches  ->  A12.2.15.029F: uterine artery
+A09.4.02.017: intermediate part of urethra  ->  A08.5.01.001M: male urethra
+A12.2.12.088F: tubal branches  ->  A12.2.12.086F: ovarian artery
+A12.2.12.088M: epididymal branches  ->  A12.2.12.086M: testicular artery
+A10.1.02.506F: mesometrium  ->  A10.1.02.505F: broad ligament of uterus
+A09.2.03.005: external urethral orifice  ->  A08.4.01.001F: female urethra
+A09.2.03.003: intramural part  ->  A08.4.01.001F: female urethra
+A09.2.03.002: voiding internal urethral orifice  ->  A08.3.01.027M: internal urethral orifice
+A09.4.02.030: external urethral orifice  ->  A08.5.01.001M: male urethra
+A09.2.03.011: spongy layer  ->  A08.4.01.001F: female urethra
+A09.2.03.012: mucosa  ->  A08.4.01.001F: female urethra
+A12.2.15.034F: tubal branch  ->  A12.2.15.029F: uterine artery
+A12.2.15.032F: azygos artery of vagina  ->  A12.2.15.031F: vaginal branches
+A12.2.15.030F: helicine branches  ->  A12.2.15.029F: uterine artery
+A14.3.03.053F: vaginal nerves  ->  A14.3.03.052F: uterovaginal plexus
+A12.2.12.087M: ureteric branches  ->  A12.2.12.086M: testicular artery
+A12.2.12.087F: ureteric branches  ->  A12.2.12.086F: ovarian artery
+A09.4.02.001: filling internal urethral orifice  ->  A08.3.01.027M: internal urethral orifice
+A09.4.02.002: emptying internal urethral orifice  ->  A08.3.01.027M: internal urethral orifice
+A09.4.02.003: intramural part  ->  A08.5.01.001M: male urethra
+A09.4.02.004: prostatic urethra  ->  A08.5.01.001M: male urethra
+A10.1.02.507F: mesosalpinx  ->  A10.1.02.505F: broad ligament of uterus
+A09.4.02.021: spongy urethra  ->  A08.5.01.001M: male urethra
