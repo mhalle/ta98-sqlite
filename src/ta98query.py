@@ -97,7 +97,7 @@ if __name__ == '__main__':
     ids = set([x.id for x in t])
     for b in ids:
         ee = ta.getEntry(ta_id=b)
-        print(ee.name_en)
+        print((ee.name_en))
 
     sys.exit(0)
     i = ta.getSynonyms(ta_id=t.id)
@@ -106,4 +106,4 @@ if __name__ == '__main__':
     e = ta.getEntry(ta_id = t.id)
     print(e)
 
-    print(ta.getWikipediaInfo(t.id))
+    print((ta.getWikipediaInfo(t.id)))

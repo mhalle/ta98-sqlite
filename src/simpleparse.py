@@ -64,7 +64,7 @@ def createDbTables(conn):
 
 def convertParsedOutput(indict):
     outdict = {}
-    for k, v in indict.iteritems():
+    for k, v in indict.items():
         outdict[field_replacement[k]] = v
 
     outdict['properties'] = [field_replacement[x]

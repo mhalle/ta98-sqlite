@@ -33,7 +33,7 @@ def query(dbfile, q):
                     where synonyms_fts match ? 
                     order by bm25(synonyms_fts, 40.0, 40.0, 5.0, 5.0, 1.0)""", [q])
     for row in rows:
-        print row
+        print(row)
 if __name__ == '__main__':
     addFTS(sys.argv[1])
     query(sys.argv[1], sys.argv[2])

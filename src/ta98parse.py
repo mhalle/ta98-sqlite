@@ -15,16 +15,16 @@ def parse(fp_or_str):
             section_key = r.text.strip()
             section_val = sections[section_key.replace(' ', '_')] = {}
         else:  # SectionContent
-            if section_key == u'FMA Taxonomy':
+            if section_key == 'FMA Taxonomy':
                 parent = r.find(class_='ENb')
                 parent_id_name = get_key_val(parent)
                 if parent_id_name:
-                    section_val[u'FMA_parent'] = parent_id_name
+                    section_val['FMA_parent'] = parent_id_name
                 specs = r.find_all(class_='spec')
                 fma_ancestors = list(reversed([get_key_val(x) for x in specs]))
-                section_val[u'FMA_ancestors'] = fma_ancestors
-                section_val[u'FMA_name'] = fma_ancestors[0][1]
-            elif section_key == u'TA98 Hierarchy':
+                section_val['FMA_ancestors'] = fma_ancestors
+                section_val['FMA_name'] = fma_ancestors[0][1]
+            elif section_key == 'TA98 Hierarchy':
                 spec = r.find(class_='spec')
                 ta_hierarchy.append(get_key_val_title(spec))
                 current_entry = r.find(class_='LAa')
@@ -32,13 +32,13 @@ def parse(fp_or_str):
                     found_current_in_hierarchy = True
                     parent = current_entry.find_previous(class_='LAb')
                     if parent:
-                        section_val[u'TA98_parent'] = get_key_val_title(parent.parent)
+                        section_val['TA98_parent'] = get_key_val_title(parent.parent)
             else:
                 for rub in r.find_all(class_='rub'):
                     rubval = rub.text.strip().replace(' ', '_')
                     spec = rub.find_next_sibling(class_='spec')
                     specval = spec.text.strip()
-                    if section_val.has_key(rubval):
+                    if rubval in section_val:
                         curval = section_val[rubval]
                         if isinstance(curval, list):
                             curval.append(specval)
@@ -47,10 +47,10 @@ def parse(fp_or_str):
                     else:
                         section_val[rubval] = specval
 
-    output = {u'Properties': []}
-    for prop_name, prop_val in sections.iteritems():
-        if prop_name == u'Properties':
-            output[u'Properties'] = [x.replace(' ', '_') for x in prop_val.keys()]
+    output = {'Properties': []}
+    for prop_name, prop_val in sections.items():
+        if prop_name == 'Properties':
+            output['Properties'] = [x.replace(' ', '_') for x in list(prop_val.keys())]
         else:
             output.update(prop_val)
     ta_ancestors = []

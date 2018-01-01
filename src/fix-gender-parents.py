@@ -17,10 +17,10 @@ def fix_gender_parents(dbname):
     
 
     fixes = []
-    for s in structures.itervalues():
+    for s in structures.values():
         if not s['parent_id']:
             continue
-        if structures.has_key(s['parent_id']):
+        if s['parent_id'] in structures:
             continue
 
         parent_id = s['parent_id']
@@ -29,7 +29,7 @@ def fix_gender_parents(dbname):
         elif s['female_gender']:
             new_parent_id = parent_id + 'F'
         else:
-            if structures.has_key(parent_id + 'F'):
+            if parent_id + 'F' in structures:
                 new_parent_id = parent_id + 'F'
             else:
                 new_parent_id = parent_id + 'M'
@@ -48,7 +48,7 @@ def fix_gender_parents(dbname):
     for r in qres:
         structures[r['id']] = r
 
-    for s in structures.itervalues():
+    for s in structures.values():
         sid = s['id']
         hierarchies[sid] = this_hierarchy = []
 
@@ -61,7 +61,7 @@ def fix_gender_parents(dbname):
             level += 1
 
     statements = []
-    for sid,hier_level_list in hierarchies.iteritems():  
+    for sid,hier_level_list in hierarchies.items():  
         structure_name = structures[sid]['name_en']
         for ancestor_id, ancestor_name, level in hier_level_list:
             statements.append((sid, ancestor_id, ancestor_name, level))

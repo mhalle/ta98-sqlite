@@ -21,9 +21,9 @@ if __name__ == '__main__':
             cur.execute('insert or ignore into wikipedia (id, name_en, wp_title) values (?,?,?)',
             [i, n, r[0]])
 
-            print i, n, r[0]
+            print(i, n, r[0])
         else:
-            print 'no match', i, n
+            print('no match', i, n)
         conn.commit()
 
     conn.close()

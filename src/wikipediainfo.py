@@ -20,16 +20,16 @@ if __name__ == '__main__':
     titles = set(x[0] for x in wpedia.execute('select distinct wp_title from wikipedia'))
     titles_done = set(x[0] for x in wpedia.execute('select wp_title from wp_page_info'))
     for t in (titles - titles_done):
-        print t
+        print(t)
         page = None
         try:
             page = wikipedia.page(t)
         except Exception as e:  # catch everything and ignore
-            print >> sys.stderr, e
+            print(e, file=sys.stderr)
             try:
                 page = wikipedia.page(t.replace(' ', '_'), auto_suggest=False)
             except Exception as e:
-                print >> sys.stderr, e
+                print(e, file=sys.stderr)
         if not page:
             continue
 

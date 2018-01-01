@@ -30,8 +30,8 @@ image_capture = {
 }
 
 gray_capture = {
-    u'dbo:grayPage': 'gray_page',
-    u'dbo:graySubject': 'gray_subject'
+    'dbo:grayPage': 'gray_page',
+    'dbo:graySubject': 'gray_subject'
 }
 
 
@@ -65,7 +65,7 @@ def get_fields(d, fields, accessor=None):
         accessor = lambda x: x
 
     dprime = {}
-    for k, v in fields.iteritems():
+    for k, v in fields.items():
         try:
             field_val = d[k]
         except KeyError:
@@ -75,7 +75,7 @@ def get_fields(d, fields, accessor=None):
     return dprime
 
 def sub_prefixes(s):
-    for k, v in prefixes.iteritems():
+    for k, v in prefixes.items():
         if s.startswith(v):
             s = s.replace(v, '{}:'.format(k))
             break
@@ -83,7 +83,7 @@ def sub_prefixes(s):
 
 def simplify(d):
     ret = {}
-    for field_name, field_value_list in d.iteritems():
+    for field_name, field_value_list in d.items():
         k = sub_prefixes(field_name)
         v = field_value_list
         ret[k] = v
@@ -94,9 +94,9 @@ def simplify(d):
 if __name__ == '__main__':
     title = '_'.join(sys.argv[1:])
 
-    url = u'http://dbpedia.org/sparql/'
-    resource = u'http://dbpedia.org/resource/{}'.format(title)
-    query = u'DESCRIBE <{}>'.format(resource)
+    url = 'http://dbpedia.org/sparql/'
+    resource = 'http://dbpedia.org/resource/{}'.format(title)
+    query = 'DESCRIBE <{}>'.format(resource)
     data = {
         'query': query,
         'format': 'application/x-json+ld'
@@ -113,6 +113,6 @@ if __name__ == '__main__':
 
     ns_fields = simplify(raw_fields)
 
-    print get_gray_fields(ns_fields)
-    print get_lang_fields(ns_fields)
-    print get_image_fields(ns_fields)
+    print(get_gray_fields(ns_fields))
+    print(get_lang_fields(ns_fields))
+    print(get_image_fields(ns_fields))

@@ -102,7 +102,7 @@ def stripNS(s):
 
 def convertParsedOutput(indict):
     outdict = {}
-    for k, v in indict.iteritems():
+    for k, v in indict.items():
         outdict[field_replacement[k]] = v
 
     outdict['properties'] = [field_replacement[x]
@@ -194,7 +194,7 @@ def dbmain():
 
             for note_type in ('footnote', 'problem_note', 'correction_note',
                               'rat_note', 'redirection_note'):
-                if r.has_key(note_type):
+                if note_type in r:
                     field_val = r[note_type]
                     if not isinstance(field_val, list):
                         field_val = [field_val]
@@ -208,7 +208,7 @@ def dbmain():
                                                 ('english_source_term', 'en'),
                                                 ('latin_precursor_term', 'la'),
                                                 ('english_synonym', 'en')):
-                if r.has_key(synonym_field):
+                if synonym_field in r:
                     field_val = r[synonym_field]
                     if not isinstance(field_val, list):
                         field_val = [field_val]
@@ -228,8 +228,8 @@ def getAllAttrs():
     for filename in filenames:
         with open(filename) as fp:
             results = ta98.parse(fp)
-            allAttrs.update(results.keys())
-    print allAttrs
+            allAttrs.update(list(results.keys()))
+    print(allAttrs)
 
 def getAllProps():
     filenames = sys.argv[1:]
@@ -242,7 +242,7 @@ def getAllProps():
             except KeyError:
                 continue
             allProps.update(p)
-    print allProps
+    print(allProps)
 
 if __name__ == '__main__':
     dbmain()

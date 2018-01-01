@@ -41,7 +41,7 @@ def uniqify(dbname):
                                             e['count'])
 
     # first pass: identify need for parents
-    for s in structures.itervalues():
+    for s in structures.values():
         if s.count > 1:
             s.needs_parent = True
             continue
@@ -78,7 +78,7 @@ def uniqify(dbname):
             s.needs_parent = True
 
     # second pass: assemble
-    for s in structures.itervalues():
+    for s in structures.values():
         uname = s.name
         needs = s.needs_parent
         parent_id = s.parent_id
@@ -99,7 +99,7 @@ def uniqify(dbname):
         s.hstring = uname
 
     sorted_structures = sorted(
-        structures.values(), key=operator.attrgetter('hstring'))
+        list(structures.values()), key=operator.attrgetter('hstring'))
 
     fully_qualified_names = []
     for s in sorted_structures:

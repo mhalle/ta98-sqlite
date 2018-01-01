@@ -23,7 +23,7 @@ if __name__ == '__main__':
     for ta_id, ta_name in ta_info:
         already_done = list(wpedia.execute('''select * from wikipedia where id=?''', (ta_id,)))
         if already_done:
-            print "done:", already_done
+            print("done:", already_done)
             continue
         try:
             search_results = wikipedia.search(ta_id)
@@ -33,5 +33,5 @@ if __name__ == '__main__':
             wpedia.execute('''insert or ignore into wikipedia
                 (id, name_en, wp_title) values 
                 (?,?,?)''', (ta_id, ta_name, s))
-            print (ta_id, ta_name, s)
+            print((ta_id, ta_name, s))
             wpedia.commit()
