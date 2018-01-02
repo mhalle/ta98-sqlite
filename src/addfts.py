@@ -10,8 +10,7 @@ def addFTS(dbfile):
     cur.execute('''drop view if exists ta98_search''')
     cur.execute('''drop table if exists synonyms_fts''')
     cur.execute('''create virtual table
-        synonyms_fts 
-        using fts5(name_en, name_la, synonym, hierarchy, id unindexed, prefix=4)'''
+        ta98_fts 
                )
 
     cur.execute('''insert into
