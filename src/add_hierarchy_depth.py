@@ -25,6 +25,8 @@ def add_hierarchy_depth(dbfilename):
          ''')
         cur.execute('alter table hierarchy rename to hierarchy_prev')
         cur.execute('alter table hierarchy_new rename to hierarchy')
+        cur.execute('drop table hierarchy_prev')
+
 
 
 
