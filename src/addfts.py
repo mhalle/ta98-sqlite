@@ -36,5 +36,4 @@ def query(dbfile, q):
 if __name__ == '__main__':
     addFTS(sys.argv[1])
     if len(sys.argv) > 2:
-        print(len(sys.argv))
         query(sys.argv[1], sys.argv[2])
