@@ -1,4 +1,5 @@
-import ta98parse
+import ta98parse as ta98
+from ta98scrapeddata import TA98ScrapedData
 import sys
 import sqlite3
 import re
@@ -67,7 +68,8 @@ def createDbTables(conn):
         (id text,
         ancestor_id text,
         ancestor_name text,
-        hierarchy_level integer,
+        level integer,
+        depth integer,
         foreign key(id) references ta98(id)
         )''')
 
@@ -80,7 +82,7 @@ def createDbTables(conn):
         fma_id text,
         fma_ancestor_id text,
         fma_ancestor_name text,
-        hierarchy_level integer,
+        level integer,
         foreign key(id) references ta98(id)
         foreign key(id) references ta98(id),
         foreign key(fma_id) references ta98(fma_id)
@@ -100,21 +102,47 @@ def stripNS(s):
         return s
     return re.sub(r'^\w+:', '', s)
 
-def convertParsedOutput(indict):
+def convertParsedOutput(ta_id, indict):
     outdict = {}
     for k, v in indict.items():
+        outdict['id'] = outdict['source_id'] = ta_id
         outdict[field_replacement[k]] = v
 
     outdict['properties'] = [field_replacement[x]
                              for x in outdict['properties']]
 
     outdict['type_of_entity'] = outdict['type_of_entity'].lower()
-    outdict['source_id'] = outdict['id']
-    if 'male_gender' in outdict['properties']:
-        outdict['id'] = outdict['id'] + 'M'
-    elif 'female_gender' in outdict['properties']:
-        outdict['id'] = outdict['id'] + 'F'
     return outdict
+
+def fixup_gender_parents(parsed_items):
+    for k, v in parsed_items.items():
+        if 'parent' not in v:
+            continue
+        ta_id = v['id']
+        parent_id = v['parent'][0]
+        if parent_id not in parsed_items:
+            if ta_id.endswith('F') or ta_id.endswith('M'):
+                gender = ta_id[-1]
+                gender_parent = parent_id + gender
+                if gender_parent in parsed_items:
+                    v['parent'] = [gender_parent, parsed_items[gender_parent]['name_en']]
+            else:
+                # try gender forms
+                for gender in ('M', 'F'):
+                    gender_parent = parent_id + gender
+                    if gender_parent in parsed_items:
+                        v['parent'] = [gender_parent, parsed_items[gender_parent]['name_en']]
+                        break
+
+
+
+
+def get_ancestors(ta_id, parsed_items):
+    item = parsed_items[ta_id]
+    while 'parent' in item:
+        yield (item['parent'])
+        item = parsed_items[item['parent'][0]]
+
 
 def pcheck(r, propname):
     return propname in r['properties']
@@ -136,10 +164,15 @@ def dbmain():
     createDbTables(conn)
     cur = conn.cursor()
     cur.execute('PRAGMA foreign_keys = OFF')
-    filenames = sys.argv[2:]
-    for filename in filenames:
-        with open(filename) as fp:
-            r = convertParsedOutput(ta98.parse(fp))
+    with TA98ScrapedData(sys.argv[2]) as scraped_data:
+        parsed_output = {}
+        for ta_id in scraped_data.ids:
+            r = convertParsedOutput(ta_id, ta98.parse(scraped_data.get_html(ta_id)))
+            parsed_output[ta_id] = r
+            
+        fixup_gender_parents(parsed_output)
+
+        for r in parsed_output.values():
             values = (r['id'],
                       r['source_id'],
                       acheck(r, 'name_en'),
@@ -166,16 +199,17 @@ def dbmain():
                 (?,?, ?,?, ?,?,?, ?,?,?, ?,?,?, ?,?,?);''', values)
 
             # HIERARCHY
-            ancestors = r.get('ancestors', [])
-            if len(ancestors) > 1:
-                for i, ancestor in enumerate(ancestors[1:]):
+            ancestors = list(get_ancestors(r['id'], parsed_output))
+            num_ancestors = len(ancestors)
+            if ancestors:
+                for i, ancestor in enumerate(ancestors):
                     cur.execute('''insert or ignore into hierarchy
                         (id, 
                         ancestor_id, 
                         ancestor_name, 
-                        hierarchy_level) values (?,?,?,?);''',
+                        level, depth) values (?,?,?,?,?);''',
                                 [r['id'], 
-                                ancestor[0], ancestor[1], i+1])
+                                ancestor[0], ancestor[1], i+1, num_ancestors-i-1])
 
             # FMA ANCESTORS
             # strip prefix off early
@@ -187,7 +221,7 @@ def dbmain():
             if len(ancestors) > 1:
                 for i, ancestor in enumerate(ancestors[1:]):
                     cur.execute('''insert or ignore into fma_hierarchy
-                        (id, fma_id, fma_ancestor_id, fma_ancestor_name, hierarchy_level) 
+                        (id, fma_id, fma_ancestor_id, fma_ancestor_name, level) 
                         values (?,?,?,?,?);''',
                                 [r['id'], stripNS(acheck(r, 'fma_id')),
                                 ancestor[0], ancestor[1], i+1])
@@ -202,9 +236,7 @@ def dbmain():
                                 values (?, ?, ?);''',
                                     [(r['id'], note_type, x) for x in field_val])
 
-            for synonym_field, synonym_lang in (('name_en', 'en'),
-                                                ('name_la', 'la'),
-                                                ('latin_official_synonym', 'la'),
+            for synonym_field, synonym_lang in (('latin_official_synonym', 'la'),
                                                 ('english_source_term', 'en'),
                                                 ('latin_precursor_term', 'la'),
                                                 ('english_synonym', 'en')):
@@ -216,7 +248,6 @@ def dbmain():
                                     (id, synonym, synonym_type,lang) values 
                                     (?,?,?,?)''',
                                     [(r['id'], x, synonym_field, synonym_lang) for x in field_val])
-
 
             conn.commit()
     conn.close()
