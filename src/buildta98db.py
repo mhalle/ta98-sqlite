@@ -22,7 +22,7 @@ field_replacement = {
     "TA98_correction_note":      "correction_note",
     "TA98_problem_note":         "problem_note",
     "TA98_English_source_term":  "english_source_term",
-    "TA_code":                   "id",
+    "TA_code":                   "source_id",
     "TA98_parent":               "parent",
     "TA98_Latin_precursor_term": "latin_precursor_term",
     "TA98_RAT_note":             "rat_note",
@@ -103,9 +103,9 @@ def stripNS(s):
     return re.sub(r'^\w+:', '', s)
 
 def convertParsedOutput(ta_id, indict):
-    outdict = {}
+    outdict = {'id' : ta_id}
     for k, v in indict.items():
-        outdict['id'] = outdict['source_id'] = ta_id
+        # outdict['id'] = outdict['source_id'] = ta_id
         outdict[field_replacement[k]] = v
 
     outdict['properties'] = [field_replacement[x]
